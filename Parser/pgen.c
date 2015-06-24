@@ -142,8 +142,6 @@ static char REQNFMT[] = "metacompile: less than %d children\n";
         Py_FatalError("REQN"); \
     } else
 
-#else
-#define REQN(i, count)  /* empty */
 #endif
 
 static nfagrammar *
@@ -171,7 +169,9 @@ compile_rule(nfagrammar *gr, node *n)
     nfa *nf;
 
     REQ(n, RULE);
+#ifdef Py_DEBUG
     REQN(n->n_nchildren, 4);
+#endif
     n = n->n_child;
     REQ(n, NAME);
     nf = addnfa(gr, n->n_str);
@@ -192,7 +192,9 @@ compile_rhs(labellist *ll, nfa *nf, node *n, int *pa, int *pb)
 
     REQ(n, RHS);
     i = n->n_nchildren;
+#ifdef Py_DEBUG
     REQN(i, 1);
+#endif
     n = n->n_child;
     REQ(n, ALT);
     compile_alt(ll, nf, n, pa, pb);
@@ -207,7 +209,9 @@ compile_rhs(labellist *ll, nfa *nf, node *n, int *pa, int *pb)
     addnfaarc(nf, b, *pb, EMPTY);
     for (; --i >= 0; n++) {
         REQ(n, VBAR);
+#ifdef Py_DEBUG
         REQN(i, 1);
+#endif
         --i;
         n++;
         REQ(n, ALT);
@@ -225,7 +229,9 @@ compile_alt(labellist *ll, nfa *nf, node *n, int *pa, int *pb)
 
     REQ(n, ALT);
     i = n->n_nchildren;
+#ifdef Py_DEBUG
     REQN(i, 1);
+#endif
     n = n->n_child;
     REQ(n, ITEM);
     compile_item(ll, nf, n, pa, pb);
@@ -247,10 +253,14 @@ compile_item(labellist *ll, nfa *nf, node *n, int *pa, int *pb)
 
     REQ(n, ITEM);
     i = n->n_nchildren;
+#ifdef Py_DEBUG
     REQN(i, 1);
+#endif
     n = n->n_child;
     if (n->n_type == LSQB) {
+#ifdef Py_DEBUG
         REQN(i, 3);
+#endif
         n++;
         REQ(n, RHS);
         *pa = addnfastate(nf);
@@ -259,7 +269,9 @@ compile_item(labellist *ll, nfa *nf, node *n, int *pa, int *pb)
         compile_rhs(ll, nf, n, &a, &b);
         addnfaarc(nf, *pa, a, EMPTY);
         addnfaarc(nf, b, *pb, EMPTY);
+#ifdef Py_DEBUG
         REQN(i, 1);
+#endif
         n++;
         REQ(n, RSQB);
     }
@@ -283,10 +295,14 @@ compile_atom(labellist *ll, nfa *nf, node *n, int *pa, int *pb)
 
     REQ(n, ATOM);
     i = n->n_nchildren;
+#ifdef Py_DEBUG
     REQN(i, 1);
+#endif
     n = n->n_child;
     if (n->n_type == LPAR) {
+#ifdef Py_DEBUG
         REQN(i, 3);
+#endif
         n++;
         REQ(n, RHS);
         compile_rhs(ll, nf, n, pa, pb);
