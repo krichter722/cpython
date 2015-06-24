@@ -6,4 +6,5 @@ before_install:
  - sudo apt-get -qq update
  - sudo apt-get -qq build-dep python
  - sudo apt-get -qq install clang gcc
-script: autoreconf --force --install --verbose && ./configure && make -j24 && make -j24 test && make -j24 distcheck && sudo make install
+# there's no `make distcheck` target
+script: autoreconf --force --install --verbose && ./configure && make -j24 && make -j24 test && sudo make install
