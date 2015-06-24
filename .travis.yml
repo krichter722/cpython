@@ -1,0 +1,9 @@
+language: c
+compiler:
+  - gcc
+  - clang
+before_install:
+ - sudo apt-get -qq update
+ - sudo apt-get -qq build-dep python
+script: autoreconf --force --install --verbose && ./configure && make -j24 && sudo make -j24 test && make -j24 distcheck && sudo make install
+after_failure: cat test-suite.log
